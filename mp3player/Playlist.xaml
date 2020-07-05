@@ -1,0 +1,23 @@
+﻿<Window x:Class="mp3player.Playlist"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:mp3player"
+        mc:Ignorable="d"
+        Title="Playlist" Height="200" Width="300" ShowInTaskbar="False" Closing="Window_Closing">
+    <Grid>
+        <ListBox x:Name="Lsb_Files" Margin="10" AllowDrop="true" Drop="ListBox_Drop" SelectionChanged="Lsb_Files_SelectionChanged" MouseDoubleClick="Lsb_Files_MouseDoubleClick">
+            
+        <ListBox.ContextMenu>
+            <ContextMenu>
+                <MenuItem Header="Menu item 1" />
+                <MenuItem Header="Menu item 2" />
+                <Separator />
+                <MenuItem Header="Menu item 3" />
+            </ContextMenu>
+        </ListBox.ContextMenu>
+        </ListBox>
+
+    </Grid>
+</Window>
