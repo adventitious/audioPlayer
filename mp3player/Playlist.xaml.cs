@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -18,10 +19,10 @@ namespace mp3player
     public class Track
     {
         public String Path;
-        String Filename;
+        public String Filename;
         String Title;
         String Artist;
-        double LengthSeconds;
+        public double LengthSeconds;
         public MediaPlayer mediaPlayer2 = new MediaPlayer();
 
         public Track( string s )
@@ -46,7 +47,6 @@ namespace mp3player
                         i = 10;
                     }
                 }
-
             }
             catch( Exception ee )
             {
@@ -66,6 +66,7 @@ namespace mp3player
         MainWindow MainWindow;
         public List<Track> Tracks = new List<Track>();
         Track NowPlaying;
+        private bool PlaylistChanged = false;
 
         public Playlist(MainWindow mainWindow)
         {
@@ -85,6 +86,8 @@ namespace mp3player
 
             Lsb_Files.ItemsSource = Tracks;
             Lsb_Files.Items.Refresh();
+
+            PlaylistChanged = true;
         }
 
         private void Lsb_Files_SelectionChanged(object sender, SelectionChangedEventArgs e)
