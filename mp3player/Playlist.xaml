@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:mp3player"
         mc:Ignorable="d"
-        Title="Playlist" Height="200" Width="300" ShowInTaskbar="False" Closing="Window_Closing" Background="#FF263465" WindowStartupLocation="Manual">
+        Title="Playlist" Height="260" Width="380" ShowInTaskbar="False" Closing="Window_Closing" Background="#FF263465" WindowStartupLocation="Manual">
 
     <Window.Resources>
         <Style x:Key="_ListBoxItemStyle" TargetType="ListBoxItem">
@@ -35,16 +35,16 @@
                  AllowDrop="true" Drop="ListBox_Drop" 
                  SelectionChanged="Lsb_Files_SelectionChanged" 
                  MouseDoubleClick="Lsb_Files_MouseDoubleClick" Background="Black" 
-                 BorderBrush="#FF325DC2" Foreground="#FF16B029">
-            
-        <ListBox.ContextMenu>
-            <ContextMenu>
-                <MenuItem Header="Menu item 1" />
-                <MenuItem Header="Menu item 2" />
-                <Separator />
-                <MenuItem Header="Menu item 3" />
-            </ContextMenu>
-        </ListBox.ContextMenu>
+                 BorderBrush="#FF325DC2" Foreground="#FF16B029" FontSize="16">
+
+            <ListBox.ContextMenu>
+                <ContextMenu>
+                    <MenuItem Header="Menu item 1" />
+                    <MenuItem Header="Menu item 2" />
+                    <Separator />
+                    <MenuItem Header="Menu item 3" />
+                </ContextMenu>
+            </ListBox.ContextMenu>
         </ListBox>
 
     </Grid>

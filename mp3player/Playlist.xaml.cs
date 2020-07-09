@@ -20,51 +20,44 @@ namespace mp3player
     {
         public String Path;
         public String Filename;
-        String Title;
-        String Artist;
+        public String Title;
+        public String Artist;
         public double LengthSeconds;
         public MediaPlayer mediaPlayer2 = new MediaPlayer();
         public string IsPlaying = "";
+        public string ListString = "";
 
         public Track( string s )
         {
             Path = s;
-            Filename = System.IO.Path.GetFileName(Path);
+            //Filename = System.IO.Path.GetFileName(Path);
 
-            try
-            {
-                mediaPlayer2.Open(new System.Uri(Path));
-                Thread.Sleep(20);
 
-                for (int i = 0; i < 10; i++)
-                {
-                    Thread.Sleep(100);
-                    if (mediaPlayer2.NaturalDuration.HasTimeSpan)
-                    {
-                        double t1 = mediaPlayer2.NaturalDuration.TimeSpan.TotalSeconds;
-                        LengthSeconds = t1;
-                        i = 10;
-                    }
-                }
-            }
-            catch( Exception ee )
-            {
-                MessageBox.Show( ee.Message );
-            }
+            var tfile = TagLib.File.Create( s );
+            string title = tfile.Tag.Title;
+            TimeSpan duration = tfile.Properties.Duration;
+            //MessageBox.Show("cccccc" + title);
+
+            LengthSeconds = duration.TotalSeconds;
+            Title = tfile.Tag.Title;
+            Artist = tfile.Tag.FirstPerformer;
+            ListString = Artist + " - " + Title;
+
+            // MessageBox.Show("cc " + tfile.Properties.AudioBitrate + " ww " + tfile.Properties.AudioSampleRate + " ww " + tfile.Properties.AudioChannels + " ww " );
         }
 
 
-        public Track(string path, int seconds, string filename )
+        public Track(string path, int seconds, string listString )
         {
             Path = path;
-            Filename = filename;
+            ListString = listString;
             LengthSeconds = seconds;
         }
         // SecondsToText( int seconds )
         public override string ToString()
         {
             string x = MainWindow.SecondsToText((int)Math.Floor(LengthSeconds));
-            return x + "\t" + IsPlaying + Filename; 
+            return x + "\t" + IsPlaying + ListString; 
         }
     }
 
@@ -101,7 +94,7 @@ namespace mp3player
                     s += "#EXTINF:";
                     s += (int)t.LengthSeconds;
                     s += ",";
-                    s += t.Filename;
+                    s += t.ListString;
                     s += "\r\n";
                     s += "file" + ":///";
                     s += t.Path;
@@ -147,11 +140,11 @@ namespace mp3player
                     try
                     {
                         int seconds = int.Parse(lineARightByComma[0]);
-                        string filename = lineARightByComma[1];
+                        string listString = lineARightByComma[1];
                         //MessageBox.Show(seconds + "___" + filename);
                         string path = lines[i + 1];
                         path = path.Substring( 8, path.Length - 8);
-                        Track t = new Track( path, seconds, filename );
+                        Track t = new Track( path, seconds, listString );
                         Tracks.Add(t);
                         i++;
                         i++;

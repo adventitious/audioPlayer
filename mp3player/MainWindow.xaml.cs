@@ -5,6 +5,7 @@ using System.Windows.Media;
 using System.IO;
 using System.Timers;
 using System.Threading;
+using TagLib;
 
 namespace mp3player
 {
@@ -213,6 +214,7 @@ namespace mp3player
 
         public void Open(string file)
         {
+
             mediaPlayer.Open(new System.Uri(file));
         }
 
