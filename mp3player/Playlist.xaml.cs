@@ -24,6 +24,7 @@ namespace mp3player
         String Artist;
         public double LengthSeconds;
         public MediaPlayer mediaPlayer2 = new MediaPlayer();
+        public string IsPlaying = "";
 
         public Track( string s )
         {
@@ -59,14 +60,14 @@ namespace mp3player
             Filename = filename;
             LengthSeconds = seconds;
         }
-
+        // SecondsToText( int seconds )
         public override string ToString()
         {
-            return Math.Floor( LengthSeconds ) + "\t" + Filename; 
+            string x = MainWindow.SecondsToText((int)Math.Floor(LengthSeconds));
+            return x + "\t" + IsPlaying + Filename; 
         }
-
-
     }
+
     public partial class Playlist : Window
     {
         MainWindow MainWindow;
@@ -131,14 +132,6 @@ namespace mp3player
             }
 
             // MessageBox.Show(s111[1]);
-
-
-            /*
-
-            #EXTINF:224,Linton Kwesi Johnson - Street 66
-            file:///C:/Users/uservt/Downloads/1980%20-%20Bass%20Culture/02%20-%20Street%2066.mp3
-
-            */
 
             for (int i = 1; i + 1 < lines.Length;)
             {
@@ -209,33 +202,49 @@ namespace mp3player
         private void Lsb_Files_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
             Track t = (Track)Lsb_Files.SelectedItem;
-            MainWindow.Txb_File.Text = t.Path;
-            MainWindow.Open(t.Path);
-            MainWindow.Play();
-            NowPlaying = t;
+            PlayTrack(t);
         }
 
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
             //MessageBox.Show("new Window_Closing");
 
-
             e.Cancel = true;
             Hide();
         }
 
+
+        public void PlayTrack( Track t )
+        {
+            if (NowPlaying != null)
+            {
+                NowPlaying.IsPlaying = "";
+            }
+            MainWindow.Txb_File.Text = t.Path;
+            MainWindow.Open(t.Path);
+            MainWindow.Play();
+            t.IsPlaying = " |> ";
+            NowPlaying = t;
+            Lsb_Files.Items.Refresh();
+        }
+
+        public void BackTrack()
+        {
+            int nowPlaying = Tracks.IndexOf(NowPlaying);
+            if (nowPlaying > 0 )
+            {
+                Track t = Tracks.ElementAt(nowPlaying - 1);
+                PlayTrack(t);
+            }
+        }
         public void NextTrack()
         {
-            int nowPlaying = Tracks.IndexOf( NowPlaying );
-            if( nowPlaying < Tracks.Count )
+            int nowPlaying = Tracks.IndexOf(NowPlaying);
+            if (nowPlaying < Tracks.Count - 1)
             {
-                Track t = Tracks.ElementAt( nowPlaying + 1 ) ;
-                MainWindow.Txb_File.Text = t.Path;
-                MainWindow.Open(t.Path);
-                MainWindow.Play();
-                NowPlaying = t;
+                Track t = Tracks.ElementAt(nowPlaying + 1);
+                PlayTrack(t);
             }
-
         }
     }
 }

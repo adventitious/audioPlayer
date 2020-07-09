@@ -16,6 +16,7 @@ namespace mp3player
 
         System.Timers.Timer aTimer;
         Playlist Playlist;
+        bool CountUp = false;
 
 
 
@@ -43,6 +44,7 @@ namespace mp3player
             aTimer.Interval = 100;
 
             Playlist = new Playlist(this);
+            Playlist.Show();
             // MakeTracksFromM3U(m3u);
         }
 
@@ -168,7 +170,18 @@ namespace mp3player
                     Playlist.NextTrack();
                 }
 
-                TxBk_Info.Text = (SecondsToText((int)Math.Floor(remaining)));
+                string countString = "";
+
+                if( CountUp == true )
+                {
+                    countString = (SecondsToText((int)Math.Floor(Position)));
+                }
+                else
+                {
+                    countString = (SecondsToText((int)Math.Floor(remaining)));
+                }
+
+                TxBk_Info.Text = countString; //  (SecondsToText((int)Math.Floor(remaining)));
 
                 Prg_Bar.Value = 100 / (total / Position);
                 SetSlider( 100 / (total / Position) / 10 );
@@ -180,7 +193,7 @@ namespace mp3player
         }
 
 
-        private string SecondsToText( int seconds )
+        public static string SecondsToText( int seconds )
         {
             int seconds2 = seconds % 60;
             if ( seconds2 < 10 )
@@ -213,6 +226,9 @@ namespace mp3player
             mediaPlayer.Play();
             aTimer.Enabled = true;
 
+            //mediaPlayer.SpeedRatio = 1.8;
+
+            // MessageBox.Show("cccccc"  );
             // Thread.Sleep(300);
 
 
@@ -251,6 +267,34 @@ namespace mp3player
         private void Slider_MouseDoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
             SliderStereo.Value = 10; 
+        }
+
+
+
+        private void Mp3_Play_Activated(object sender, EventArgs e)
+        {
+            //MessageBox.Show("a");
+            if( Playlist != null)
+            {
+                Playlist.Focus();
+                // this.Focus();
+            }
+            
+        }
+
+        private void TxBk_Info_MouseDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            CountUp = !CountUp;
+        }
+
+        private void Btn_Next_Click(object sender, RoutedEventArgs e)
+        {
+            Playlist.NextTrack();
+        }
+
+        private void Btn_Back_Click(object sender, RoutedEventArgs e)
+        {
+            Playlist.BackTrack();
         }
     }
 }

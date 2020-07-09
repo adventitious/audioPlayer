@@ -5,26 +5,27 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:mp3player"
         mc:Ignorable="d"
-        Title="mp3 player" Height="241.6" Width="665.6" Loaded="Window_Loaded" Closing="Mp3_Play_Closing">
+        Title="mp3 player" Height="253.6" Width="665.6" Loaded="Window_Loaded" Closing="Mp3_Play_Closing" Activated="Mp3_Play_Activated" Background="#FF263465">
+
     <Grid>
-        <Button x:Name="Btn_Play" Content="&gt;" HorizontalAlignment="Left" Margin="69,178,0,0" VerticalAlignment="Top" Width="55" Click="Btn_Play_Click"/>
-        <TextBox x:Name="Txb_File" Height="23" Margin="197,10,9.6,0" TextWrapping="Wrap" Text="C:\track1.mp3" VerticalAlignment="Top"/>
+        <Button x:Name="Btn_Play" Content="|&gt;" HorizontalAlignment="Left" Margin="69,178,0,0" VerticalAlignment="Top" Width="55" Click="Btn_Play_Click"/>
+        <TextBox x:Name="Txb_File" Height="28" Margin="197,10,9.2,0" Text="C:\track1.mp3" VerticalAlignment="Top" Background="Black" Foreground="#FF14CA30" FontSize="16"/>
         <Button x:Name="Btn_Stop" Content="[__]" HorizontalAlignment="Left" Margin="187,178,0,0" VerticalAlignment="Top" Width="55" Click="Btn_Stop_Click"/>
-        <TextBlock x:Name="TxBk_Info" Margin="10,10,496.2,0" TextWrapping="Wrap" Text="0:00" VerticalAlignment="Top" Height="84" FontSize="48" HorizontalAlignment="Center"/>
+        <TextBlock x:Name="TxBk_Info" Margin="24,10,476.2,0" TextWrapping="Wrap" Text="0:00" VerticalAlignment="Top" Height="67" FontSize="48" Background="Black" Foreground="#FF2FB015" Width="159" HorizontalAlignment="Center" TextAlignment="Center" MouseDown="TxBk_Info_MouseDown"/>
         <Button x:Name="Btn_Pause" Content="||" HorizontalAlignment="Left" Margin="128,178,0,0" VerticalAlignment="Top" Width="55" Click="Btn_Pause_Click"/>
         <Button x:Name="Btn_Playlist" Content="Playlist" HorizontalAlignment="Left" Margin="574,75,0,0" VerticalAlignment="Top" Width="75" Click="Btn_Playlist_Click"/>
         <ProgressBar x:Name="Prg_Bar" Height="30" Margin="10,99,10.2,0" VerticalAlignment="Top"/>
         <Slider x:Name="Sld_Position" Margin="10,134,10.2,0" VerticalAlignment="Top" RenderTransformOrigin="-0.024,-0.316" Height="26" TickFrequency="0" ValueChanged="Sld_Position_ValueChanged" IsMoveToPointEnabled="True"/>
-        <Button x:Name="Btn_Stop_Copy" Content="|&lt;" HorizontalAlignment="Left" Margin="10,178,0,0" VerticalAlignment="Top" Width="55"/>
-        <Button x:Name="Btn_Stop_Copy1" Content="&gt;|" HorizontalAlignment="Left" Margin="246,178,0,0" VerticalAlignment="Top" Width="55"/>
+        <Button x:Name="Btn_Back" Content="|&lt;" HorizontalAlignment="Left" Margin="10,178,0,0" VerticalAlignment="Top" Width="55" Click="Btn_Back_Click"/>
+        <Button x:Name="Btn_Next" Content="&gt;|" HorizontalAlignment="Left" Margin="246,178,0,0" VerticalAlignment="Top" Width="55" Click="Btn_Next_Click"/>
         <Button x:Name="Btn_Playlist_Copy1" Content="Queue" HorizontalAlignment="Left" Margin="494,75,0,0" VerticalAlignment="Top" Width="75"/>
         <Button x:Name="Btn_Stop_Copy2" Content="Shuffle" HorizontalAlignment="Left" Margin="415,178,0,0" VerticalAlignment="Top" Width="75"/>
         <Button x:Name="Btn_Pause_Copy" Content="Open" HorizontalAlignment="Left" Margin="335,178,0,0" VerticalAlignment="Top" Width="75"/>
         <Button x:Name="Btn_Stop_Copy3" Content="Repeat" HorizontalAlignment="Left" Margin="495,178,0,0" VerticalAlignment="Top" Width="75"/>
         <Slider HorizontalAlignment="Left" Margin="197,77,0,0" VerticalAlignment="Top" Width="225" Value="10" TickFrequency="0" IsMoveToPointEnabled="True" />
         <Slider x:Name="SliderStereo" HorizontalAlignment="Left" Margin="433,77,0,0" VerticalAlignment="Top" Width="52" Value="10" Maximum="20" IsMoveToPointEnabled="True" MouseDoubleClick="Slider_MouseDoubleClick"/>
-        <Label Content="kbps" HorizontalAlignment="Left" Margin="242,38,0,0" VerticalAlignment="Top"/>
-        <Label Content="kHz" HorizontalAlignment="Left" Margin="330,38,0,0" VerticalAlignment="Top"/>
+        <Label Content="144 kHz" HorizontalAlignment="Left" Margin="291,43,0,0" VerticalAlignment="Top" Foreground="#FF18D90C" Background="Black" HorizontalContentAlignment="Right" Width="54"/>
+        <Label Content="2768 kbps" HorizontalAlignment="Left" Margin="197,43,0,0" VerticalAlignment="Top" Foreground="#FF18D90C" Background="Black" Width="68" HorizontalContentAlignment="Right"/>
 
     </Grid>
 </Window>
