@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:mp3player"
         mc:Ignorable="d"
-        Title="Playlist" Height="200" Width="300" ShowInTaskbar="False" Closing="Window_Closing" Background="#FF263465">
+        Title="Playlist" Height="200" Width="300" ShowInTaskbar="False" Closing="Window_Closing" Background="#FF263465" WindowStartupLocation="Manual">
 
     <Window.Resources>
         <Style x:Key="_ListBoxItemStyle" TargetType="ListBoxItem">

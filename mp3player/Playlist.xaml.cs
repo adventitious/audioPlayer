@@ -72,7 +72,7 @@ namespace mp3player
     {
         MainWindow MainWindow;
         public List<Track> Tracks = new List<Track>();
-        Track NowPlaying;
+        public Track NowPlaying;
         public bool PlaylistChanged = false;
         private const string PlaylistName = "playlist.m3u";
 
@@ -220,9 +220,9 @@ namespace mp3player
             {
                 NowPlaying.IsPlaying = "";
             }
-            MainWindow.Txb_File.Text = t.Path;
             MainWindow.Open(t.Path);
             MainWindow.Play();
+            MainWindow.Txb_File.Text = t.ToString();
             t.IsPlaying = " |> ";
             NowPlaying = t;
             Lsb_Files.Items.Refresh();
@@ -243,6 +243,14 @@ namespace mp3player
             if (nowPlaying < Tracks.Count - 1)
             {
                 Track t = Tracks.ElementAt(nowPlaying + 1);
+                PlayTrack(t);
+            }
+        }
+        public void TrackOne()
+        {
+            if ( Tracks.Count > 0 )
+            {
+                Track t = Tracks.ElementAt( 0 );
                 PlayTrack(t);
             }
         }

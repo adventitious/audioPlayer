@@ -17,6 +17,7 @@ namespace mp3player
         System.Timers.Timer aTimer;
         Playlist Playlist;
         bool CountUp = false;
+        string Txb_File_Text = "";
 
 
 
@@ -45,7 +46,6 @@ namespace mp3player
 
             Playlist = new Playlist(this);
             Playlist.Show();
-            // MakeTracksFromM3U(m3u);
         }
 
 
@@ -97,7 +97,7 @@ namespace mp3player
             else
             {
                 mediaPlayer.Pause();
-                aTimer.Enabled = false;
+                // aTimer.Enabled = false;
                 Paused = true;
             }
             UpdateInfo();
@@ -218,7 +218,13 @@ namespace mp3player
 
         private void Open()
         {
-            Open(Txb_File.Text);
+            Track t = Playlist.NowPlaying;
+            if (t == null)
+            {
+                Playlist.TrackOne();
+                return;
+            }
+            Playlist.PlayTrack(t);
         }
 
         public void Play()
@@ -295,6 +301,37 @@ namespace mp3player
         private void Btn_Back_Click(object sender, RoutedEventArgs e)
         {
             Playlist.BackTrack();
+        }
+
+
+
+        private void Slider_Vol_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            if( mediaPlayer == null )
+            {
+                return;
+            }
+            try
+            {
+                mediaPlayer.Volume = Slider_Vol.Value / 10;
+                Txb_File.Text = "volume: " + (int)(mediaPlayer.Volume * 100);
+            }
+            catch( Exception ex )
+            {
+                MessageBox.Show( ex.Message );
+            }
+            
+        }
+
+        private void Slider_Vol_MouseEnter(object sender, System.Windows.Input.MouseEventArgs e)
+        {
+            Txb_File_Text = Txb_File.Text;
+            Txb_File.Text = "volume: " + (int)(mediaPlayer.Volume * 100);
+        }
+
+        private void Slider_Vol_MouseLeave(object sender, System.Windows.Input.MouseEventArgs e)
+        {
+            Txb_File.Text = Txb_File_Text;
         }
     }
 }
