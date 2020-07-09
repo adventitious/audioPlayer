@@ -17,6 +17,8 @@ namespace mp3player
         System.Timers.Timer aTimer;
         Playlist Playlist;
 
+
+
         public MainWindow()
         {
             InitializeComponent();
@@ -26,43 +28,31 @@ namespace mp3player
         {
             mediaPlayer = new MediaPlayer();
 
+            // Open the file to read from.
+            //string m3u = File.ReadAllText( PlaylistName );
+
+            /*
+            using (StreamReader readtext = new StreamReader( PlaylistName ))
+            {
+                m3u = readtext.ReadLine();
+            }
+            */
+
             aTimer = new System.Timers.Timer();
             aTimer.Elapsed += new ElapsedEventHandler(OnTimedEvent);
             aTimer.Interval = 100;
+
+            Playlist = new Playlist(this);
+            // MakeTracksFromM3U(m3u);
         }
 
-        /*
 
-        #EXTINF:224,Linton Kwesi Johnson - Street 66
-        file:///C:/Users/uservt/Downloads/1980%20-%20Bass%20Culture/02%20-%20Street%2066.mp3
-        
-        */
 
         private void Mp3_Play_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
-            string s = "#EXTM3U";
-            s = s + "\r\n";
+            Playlist.WriteCloseM3U();
 
-            foreach ( Track t in  Playlist.Tracks )
-            {
-                s = s + "#EXTINF:";
-                s = s + t.LengthSeconds;
-                s = s + ",";
-                s = s + t.Filename;
-                s = s + "\r\n";
-                s = s + "file" + ":///";
-                s = s + t.Path;
-                //s = s + "/";
-                //s = s + t.Filename;
-                s = s + "\r\n";
-            }
-
-            string createText = "Hello and Welcome3" + Environment.NewLine;
-            File.WriteAllText("playlist.m3u", s );
-
-            // Open the file to read from.
-            // string readText = File.ReadAllText(path);
-
+            // MessageBox.Show("shutdown now");
 
             System.Windows.Application.Current.Shutdown();
             /*
@@ -126,7 +116,6 @@ namespace mp3player
             }
             else
             {
-                Playlist = new Playlist( this ); 
                 Playlist.Show();
             }
         }
