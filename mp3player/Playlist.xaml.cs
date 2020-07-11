@@ -16,24 +16,41 @@ using System.Windows.Shapes;
 
 namespace mp3player
 {
+
     public class Track
     {
         public String Path;
         public String Filename;
         public String Title;
         public String Artist;
-        public double LengthSeconds;
         public MediaPlayer mediaPlayer2 = new MediaPlayer();
-        public string IsPlaying = "";
-        public string ListString = "";
+        public double LengthSeconds { get; set; }
+        public string ListString
+        { get; set; }
 
-        public Track( string s )
+        public string LengthMins
+        {
+            get
+            {
+                return MainWindow.SecondsToText((int)LengthSeconds) ;
+            } 
+        }
+        public string IsPlaying { get; set; }
+        public DateTime Birthday { get; set; }
+
+
+        public Track()
+        {
+            IsPlaying = "";
+        }
+
+        public Track(string s)
         {
             Path = s;
             //Filename = System.IO.Path.GetFileName(Path);
 
 
-            var tfile = TagLib.File.Create( s );
+            var tfile = TagLib.File.Create(s);
             string title = tfile.Tag.Title;
             TimeSpan duration = tfile.Properties.Duration;
             //MessageBox.Show("cccccc" + title);
@@ -42,22 +59,24 @@ namespace mp3player
             Title = tfile.Tag.Title;
             Artist = tfile.Tag.FirstPerformer;
             ListString = Artist + " - " + Title;
+            IsPlaying = "";
 
             // MessageBox.Show("cc " + tfile.Properties.AudioBitrate + " ww " + tfile.Properties.AudioSampleRate + " ww " + tfile.Properties.AudioChannels + " ww " );
         }
 
 
-        public Track(string path, int seconds, string listString )
+        public Track(string path, int seconds, string listString)
         {
             Path = path;
             ListString = listString;
             LengthSeconds = seconds;
+            IsPlaying = "";
         }
-        // SecondsToText( int seconds )
+
         public override string ToString()
         {
             string x = MainWindow.SecondsToText((int)Math.Floor(LengthSeconds));
-            return x + "\t" + IsPlaying + ListString; 
+            return x + "\t" + IsPlaying + ListString;
         }
     }
 
@@ -75,10 +94,11 @@ namespace mp3player
             MainWindow = mainWindow;
             MakeTracksFromM3U();
 
-            Lsb_Files.ItemsSource = Tracks;
-            Lsb_Files.Items.Refresh();
-
             // MessageBox.Show("new pls");
+
+            Track s = Tracks.ElementAt(0);
+            
+            Dg_Playlist.ItemsSource = Tracks;
         }
 
         public void WriteCloseM3U()
@@ -181,8 +201,8 @@ namespace mp3player
                 Tracks.Add(t);
             }
 
-            Lsb_Files.ItemsSource = Tracks;
-            Lsb_Files.Items.Refresh();
+            Dg_Playlist.ItemsSource = Tracks;
+            Dg_Playlist.Items.Refresh();
 
             PlaylistChanged = true;
         }
@@ -194,8 +214,15 @@ namespace mp3player
 
         private void Lsb_Files_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
-            Track t = (Track)Lsb_Files.SelectedItem;
-            PlayTrack(t);
+            try
+            {
+                Track t = (Track)Dg_Playlist.SelectedItem;
+                PlayTrack(t);
+            }
+            catch( Exception ex )
+            {
+                MessageBox.Show("Lsb_Files_MouseDoubleClick err " + ex.Message);
+            }
         }
 
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
@@ -206,7 +233,11 @@ namespace mp3player
             Hide();
         }
 
-
+        /*
+      
+                                <Setter TargetName="_Border" Property="Background" Value="Yellow"/>
+                                <Setter Property="Foreground" Value="Red"/>  
+    */
         public void PlayTrack( Track t )
         {
             if (NowPlaying != null)
@@ -216,9 +247,10 @@ namespace mp3player
             MainWindow.Open(t.Path);
             MainWindow.Play();
             MainWindow.Txb_File.Text = t.ToString();
-            t.IsPlaying = " |> ";
+            t.IsPlaying = "|>";
             NowPlaying = t;
-            Lsb_Files.Items.Refresh();
+            Dg_Playlist.Items.Refresh();
+            // Dg_Playlist.Items.Refresh();
         }
 
         public void BackTrack()

@@ -5,47 +5,76 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:mp3player"
         mc:Ignorable="d"
-        Title="Playlist" Height="260" Width="380" ShowInTaskbar="False" Closing="Window_Closing" Background="#FF263465" WindowStartupLocation="Manual">
+        Title="Playlist" Height="470" Width="590" ShowInTaskbar="False" Closing="Window_Closing" Background="#FF263465" WindowStartupLocation="Manual">
 
-    <Window.Resources>
-        <Style x:Key="_ListBoxItemStyle" TargetType="ListBoxItem">
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="ListBoxItem">
-                        <Border Name="_Border"
-                                Padding="2"
-                                SnapsToDevicePixels="true">
-                            <ContentPresenter />
-                        </Border>
-                        <ControlTemplate.Triggers>
-                            <Trigger Property="IsSelected" Value="true">
-                                <Setter TargetName="_Border" Property="Background" Value="Yellow"/>
-                                <Setter Property="Foreground" Value="Red"/>
-                            </Trigger>
-                        </ControlTemplate.Triggers>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
-    </Window.Resources>
 
-    <Grid>
-        <ListBox x:Name="Lsb_Files" Margin="10" 
-                 ItemContainerStyle="{DynamicResource _ListBoxItemStyle}"
+    <Grid Margin="0,0,-0.4,42.4">
+        <DataGrid x:Name="Dg_Playlist"  AutoGenerateColumns="False" 
+                  
+                  
+                                   HorizontalAlignment="Stretch"
                  AllowDrop="true" Drop="ListBox_Drop" 
                  SelectionChanged="Lsb_Files_SelectionChanged" 
                  MouseDoubleClick="Lsb_Files_MouseDoubleClick" Background="Black" 
-                 BorderBrush="#FF325DC2" Foreground="#FF16B029" FontSize="16">
+                 BorderBrush="#FF325DC2" Foreground="#FF16B029" FontSize="16" 
+                  RowBackground="Black" Margin="10,16,10,10" OpacityMask="Black" 
+                  CanUserResizeRows="False" IsReadOnly="True" HeadersVisibility="None">
 
-            <ListBox.ContextMenu>
-                <ContextMenu>
-                    <MenuItem Header="Menu item 1" />
-                    <MenuItem Header="Menu item 2" />
-                    <Separator />
-                    <MenuItem Header="Menu item 3" />
-                </ContextMenu>
-            </ListBox.ContextMenu>
-        </ListBox>
 
+                
+            <DataGrid.Columns>
+
+
+
+
+                <DataGridTemplateColumn  >
+                    
+
+                    <DataGridTemplateColumn.HeaderStyle>
+                        <Style TargetType="DataGridColumnHeader">
+                            <Setter Property="Background" Value="Black"/>
+                            <Setter Property="Height" Value="6"/>
+                        </Style>
+                    </DataGridTemplateColumn.HeaderStyle>
+
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <Label Content="{Binding IsPlaying}"
+                                   VerticalAlignment="Center" 
+                                   Foreground="#FF18D90C" 
+                                   Background="Black" BorderThickness="0"
+                                   HorizontalContentAlignment="Center" Margin="0,-8" 
+                                   HorizontalAlignment="Stretch" Width="48"/>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+
+
+                <DataGridTextColumn Width="*" Binding="{Binding ListString}">
+
+                    <DataGridTextColumn.HeaderStyle>
+                        <Style TargetType="DataGridColumnHeader">
+                            <Setter Property="Background" Value="Black"/>
+                            <Setter Property="Height" Value="6"/>
+                        </Style>
+                    </DataGridTextColumn.HeaderStyle>
+                </DataGridTextColumn>
+
+                <DataGridTextColumn Width="48" Binding="{Binding LengthMins}" >
+
+                    <DataGridTextColumn.HeaderStyle>
+                        <Style TargetType="DataGridColumnHeader">
+                            <Setter Property="Background" Value="Black"/>
+                            <Setter Property="BorderBrush" Value="Green"/>
+                            <Setter Property="BorderThickness" Value="0"/>
+                            <Setter Property="Height" Value="6"/>
+                        </Style>
+                    </DataGridTextColumn.HeaderStyle>
+                </DataGridTextColumn>
+
+
+            </DataGrid.Columns>
+
+        </DataGrid>
     </Grid>
 </Window>

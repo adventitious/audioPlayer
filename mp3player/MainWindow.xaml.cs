@@ -18,7 +18,10 @@ namespace mp3player
         System.Timers.Timer aTimer;
         Playlist Playlist;
         bool CountUp = false;
+        bool Stopped = true;
         string Txb_File_Text = "";
+        int PauseBlink = 0;
+        int PauseBlinkMax = 12;
 
 
 
@@ -84,6 +87,7 @@ namespace mp3player
             aTimer.Enabled = false;
 
             mediaPlayer.Stop();
+            Stopped = true; ;
             UpdateInfo();
         }
 
@@ -157,8 +161,35 @@ namespace mp3player
                 TxBk_Info.Text = ("0:00");
                 return;
             }
-            
+
+            if ( Paused )
+            {
+                string countString = "";
+                if ( ( PauseBlink * 2 ) < PauseBlinkMax )
+                {
+                    countString = " :  ";
+                }
+                else
+                {
+                    if (CountUp == true)
+                    {
+                        countString = (SecondsToText((int)Math.Floor(Position)));
+                    }
+                    else
+                    {
+                        countString = (SecondsToText((int)Math.Floor( t2.TimeSpan.TotalSeconds - Position)));
+                    }
+                }
+
+                TxBk_Info.Text = countString;
+
+                PauseBlink += 1;
+                PauseBlink %= PauseBlinkMax;
                 
+                return;
+            }
+
+
             try
             {
                 double total = t2.TimeSpan.TotalSeconds;
@@ -173,7 +204,7 @@ namespace mp3player
 
                 string countString = "";
 
-                if( CountUp == true )
+                if ( CountUp == true )
                 {
                     countString = (SecondsToText((int)Math.Floor(Position)));
                 }
@@ -208,13 +239,12 @@ namespace mp3player
         private void UnPause()
         {
             mediaPlayer.Play();
-            aTimer.Enabled = true;
+            // aTimer.Enabled = true;
             Paused = false;
         }
 
         public void Open(string file)
         {
-
             mediaPlayer.Open(new System.Uri(file));
         }
 
@@ -233,6 +263,7 @@ namespace mp3player
         {
             mediaPlayer.Play();
             aTimer.Enabled = true;
+            Stopped = false;
 
             //mediaPlayer.SpeedRatio = 1.8;
 
@@ -247,10 +278,22 @@ namespace mp3player
         public void Seek( double sld )
         {
             // if stopped Sld_Position.Value = 0, return
+            if( Stopped == true )
+            {
+                SetSlider(0);
+                return;
+            }
 
             double total = mediaPlayer.NaturalDuration.TimeSpan.TotalSeconds;
             double newPos = 0.1 * sld * total;
             mediaPlayer.Position = TimeSpan.FromSeconds( newPos );
+
+
+            double Position = mediaPlayer.Position.TotalSeconds;
+            Duration t2 = mediaPlayer.NaturalDuration;
+
+            Prg_Bar.Value = 100 / (total / Position);
+            SetSlider(100 / (total / Position) / 10);
         }
 
         private void SetSlider( double newVal )
