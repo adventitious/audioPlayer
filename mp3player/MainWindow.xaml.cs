@@ -246,6 +246,7 @@ namespace mp3player
         public void Open(string file)
         {
             mediaPlayer.Open(new System.Uri(file));
+            mediaPlayer.Volume = 0;
         }
 
         private void Open()

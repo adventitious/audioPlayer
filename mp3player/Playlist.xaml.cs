@@ -23,10 +23,27 @@ namespace mp3player
         public String Filename;
         public String Title;
         public String Artist;
-        public MediaPlayer mediaPlayer2 = new MediaPlayer();
+        
         public double LengthSeconds { get; set; }
-        public string ListString
-        { get; set; }
+        public string ListString { get; set; }
+        public string Colour 
+        { 
+            get
+            {
+                if( IsPlaying )
+                {
+                    return "White";
+                }
+                return "#FF18D90C";
+            }
+            set
+            { 
+            }
+        }
+
+
+        public bool IsPlaying { get; set; } = false;
+
 
         public string LengthMins
         {
@@ -35,13 +52,10 @@ namespace mp3player
                 return MainWindow.SecondsToText((int)LengthSeconds) ;
             } 
         }
-        public string IsPlaying { get; set; }
-        public DateTime Birthday { get; set; }
-
+        
 
         public Track()
         {
-            IsPlaying = "";
         }
 
         public Track(string s)
@@ -59,7 +73,6 @@ namespace mp3player
             Title = tfile.Tag.Title;
             Artist = tfile.Tag.FirstPerformer;
             ListString = Artist + " - " + Title;
-            IsPlaying = "";
 
             // MessageBox.Show("cc " + tfile.Properties.AudioBitrate + " ww " + tfile.Properties.AudioSampleRate + " ww " + tfile.Properties.AudioChannels + " ww " );
         }
@@ -70,13 +83,12 @@ namespace mp3player
             Path = path;
             ListString = listString;
             LengthSeconds = seconds;
-            IsPlaying = "";
         }
 
         public override string ToString()
         {
             string x = MainWindow.SecondsToText((int)Math.Floor(LengthSeconds));
-            return x + "\t" + IsPlaying + ListString;
+            return x + "\t" + ListString;
         }
     }
 
@@ -92,13 +104,15 @@ namespace mp3player
         {
             InitializeComponent();
             MainWindow = mainWindow;
-            MakeTracksFromM3U();
 
             // MessageBox.Show("new pls");
 
-            Track s = Tracks.ElementAt(0);
-            
-            Dg_Playlist.ItemsSource = Tracks;
+            //Lsb_Pl.Items.Refresh();
+
+            Lsb_Pl.ItemsSource = Tracks;
+            MakeTracksFromM3U();
+
+
         }
 
         public void WriteCloseM3U()
@@ -201,22 +215,23 @@ namespace mp3player
                 Tracks.Add(t);
             }
 
-            Dg_Playlist.ItemsSource = Tracks;
-            Dg_Playlist.Items.Refresh();
+            Lsb_Pl.ItemsSource = Tracks;
+            Lsb_Pl.Items.Refresh();
 
             PlaylistChanged = true;
         }
 
         private void Lsb_Files_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-
+            // MessageBox.Show("Lsb_Files_Sel change" + Dg_Playlist.SelectedIndex);
         }
 
         private void Lsb_Files_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
             try
             {
-                Track t = (Track)Dg_Playlist.SelectedItem;
+                Track t = (Track)Lsb_Pl.SelectedItem;
+
                 PlayTrack(t);
             }
             catch( Exception ex )
@@ -233,24 +248,19 @@ namespace mp3player
             Hide();
         }
 
-        /*
-      
-                                <Setter TargetName="_Border" Property="Background" Value="Yellow"/>
-                                <Setter Property="Foreground" Value="Red"/>  
-    */
         public void PlayTrack( Track t )
         {
             if (NowPlaying != null)
             {
-                NowPlaying.IsPlaying = "";
+                NowPlaying.IsPlaying = false;
             }
             MainWindow.Open(t.Path);
             MainWindow.Play();
             MainWindow.Txb_File.Text = t.ToString();
-            t.IsPlaying = "|>";
+            t.IsPlaying = true;
             NowPlaying = t;
-            Dg_Playlist.Items.Refresh();
-            // Dg_Playlist.Items.Refresh();
+
+            Lsb_Pl.Items.Refresh();
         }
 
         public void BackTrack()
@@ -278,6 +288,37 @@ namespace mp3player
                 Track t = Tracks.ElementAt( 0 );
                 PlayTrack(t);
             }
+        }
+
+        private void Lsb_Pl_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            try
+            {
+                Track t = (Track)Lsb_Pl.SelectedItem;
+
+                PlayTrack(t);
+                Lsb_Pl.Items.Refresh();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Lsb_Files_MouseDoubleClick err " + ex.Message);
+            }
+
+        }
+
+
+        private void Grid_1_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            Grid g = (Grid)sender;
+            string s = g.Children.ToString();
+
+            TextBlock t = (TextBlock)g.Children[0];
+            TextBlock t2 = (TextBlock)g.Children[1];
+
+            // MessageBox.Show(t.Text + " + " + t.ActualWidth + " + " + t2.ActualWidth + "_" +  g.ActualWidth  );
+            double great = g.ActualWidth - t2.ActualWidth - 10;
+
+            t.Width = (great > 0) ? great : 0;
         }
     }
 }
@@ -307,4 +348,16 @@ namespace mp3player
         </Style>
     </Window.Resources>
 
+
+    
+                    <DataGridTemplateColumn.HeaderStyle>
+                        <Style TargetType="DataGridColumnHeader">
+                            <Setter Property="Background" Value="Black"/>
+                            <Setter Property="Height" Value="6"/>
+                        </Style>
+                    </DataGridTemplateColumn.HeaderStyle>
+
+
+                        <Setter TargetName="_Border" Property="Background" Value="Yellow"/>
+                        <Setter Property="Foreground" Value="Red"/>  
 */
