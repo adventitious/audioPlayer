@@ -4,7 +4,7 @@
  * 
  * comments
  
-    
+    rename to audioPlayer
     
     // Subtract the current position from the duration of the current media to get
     // the time remaining. Use the Math.floor method to round the result down to the
