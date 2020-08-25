@@ -6,6 +6,7 @@ using System.IO;
 using System.Timers;
 using System.Threading;
 using TagLib;
+using System.Windows.Input;
 
 namespace mp3player
 {
@@ -14,6 +15,10 @@ namespace mp3player
         public MediaPlayer mediaPlayer;
         bool Paused = false;
         bool CodeEvent = false;
+
+        bool insideVolumeSlider = false;
+        bool insideBalanceSlider = false;
+        bool insideSeek = false;
 
         System.Timers.Timer aTimer;
         Playlist Playlist;
@@ -246,7 +251,9 @@ namespace mp3player
         public void Open(string file)
         {
             mediaPlayer.Open(new System.Uri(file));
-            mediaPlayer.Volume = 0;
+
+            // mediaPlayer.Volume = 0;
+            // Slider_Vol.Value = 0;
         }
 
         private void Open()
@@ -271,8 +278,6 @@ namespace mp3player
             // MessageBox.Show("cccccc"  );
             // Thread.Sleep(300);
 
-
-
             //UpdateInfo();
         }
 
@@ -289,7 +294,6 @@ namespace mp3player
             double newPos = 0.1 * sld * total;
             mediaPlayer.Position = TimeSpan.FromSeconds( newPos );
 
-
             double Position = mediaPlayer.Position.TotalSeconds;
             Duration t2 = mediaPlayer.NaturalDuration;
 
@@ -303,7 +307,6 @@ namespace mp3player
             Sld_Position.Value = newVal;
             CodeEvent = false;
         }
-
 
         private void Sld_Position_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
@@ -321,8 +324,6 @@ namespace mp3player
             SliderStereo.Value = 0; 
         }
 
-
-
         private void Mp3_Play_Activated(object sender, EventArgs e)
         {
             //MessageBox.Show("a");
@@ -331,7 +332,6 @@ namespace mp3player
                 Playlist.Focus();
                 // this.Focus();
             }
-            
         }
 
         private void TxBk_Info_MouseDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
@@ -349,34 +349,11 @@ namespace mp3player
             Playlist.BackTrack();
         }
 
-
-
-        private void Slider_Vol_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
-        {
-            if( mediaPlayer == null )
-            {
-                return;
-            }
-            try
-            {
-                mediaPlayer.Volume = Slider_Vol.Value / 10;
-                Txb_File.Text = "volume: " + (int)(mediaPlayer.Volume * 100);
-            }
-            catch( Exception ex )
-            {
-                MessageBox.Show( ex.Message );
-            }
-        }
-
-        private void Slider_Vol_MouseEnter(object sender, System.Windows.Input.MouseEventArgs e)
-        {
-            Txb_File_Text = Txb_File.Text;
-            Txb_File.Text = "volume: " + (int)(mediaPlayer.Volume * 100);
-        }
-
         private void Slider_Vol_MouseLeave(object sender, System.Windows.Input.MouseEventArgs e)
         {
-            Txb_File.Text = Txb_File_Text;
+            Txb_File.Text = Txb_File_Text; 
+            insideVolumeSlider = false;
+
         }
 
         private void SliderStereo_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
@@ -387,13 +364,165 @@ namespace mp3player
             }
             try
             {
-                mediaPlayer.Balance = SliderStereo.Value / 10;
-                //Txb_File.Text = "volume: " + (int)(mediaPlayer.Balance * 100);
+                mediaPlayer.Balance = SliderStereo.Value / 100;
+                Txb_File.Text = "balance: " + (mediaPlayer.Balance * 100);
             }
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message);
             }
+        }
+
+        private void SliderStereo_MouseEnter(object sender, System.Windows.Input.MouseEventArgs e)
+        {
+            Txb_File_Text = Txb_File.Text;
+            Txb_File.Text = "balance: " + (int)(mediaPlayer.Balance * 100);
+            insideBalanceSlider = true;
+        }
+
+        private void SliderStereo_MouseLeave(object sender, System.Windows.Input.MouseEventArgs e)
+        {
+            Txb_File.Text = Txb_File_Text; 
+            insideBalanceSlider = false;
+        }
+
+        private void Slider_Vol_MouseDoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            mediaPlayer.Volume = 1;
+            Slider_Vol.Value = 10;
+        }
+
+        private void Slider_Vol_MouseWheel(object sender, System.Windows.Input.MouseWheelEventArgs e)
+        {
+            /*
+            // If the mouse wheel delta is positive, move the box up.
+            if (e.Delta > 0)
+            {
+                Slider_Vol.Value = Slider_Vol.Value - 0.4;
+            }
+
+            // If the mouse wheel delta is negative, move the box down.
+            if (e.Delta < 0)
+            {
+                Slider_Vol.Value = Slider_Vol.Value + 0.4;
+            }
+            */
+        }
+
+        private void Window_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+        }
+
+        private void Mp3_Play_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            if (e.ChangedButton == MouseButton.Left)
+                this.DragMove();
+        }
+
+
+
+
+
+        private void Slider_Vol_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            if (mediaPlayer == null)
+            {
+                return;
+            }
+            try
+            {
+                mediaPlayer.Volume = Slider_Vol.Value / 10;
+                if( insideVolumeSlider )
+                {
+                    Txb_File.Text = "volume: " + (int)(mediaPlayer.Volume * 100);
+                }
+                
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+        }
+
+        private void Slider_Vol_MouseEnter(object sender, System.Windows.Input.MouseEventArgs e)
+        {
+            Txb_File_Text = Txb_File.Text;
+            Txb_File.Text = "volume: " + (int)(mediaPlayer.Volume * 100);
+            insideVolumeSlider = true;
+        }
+
+        private void Mp3_Play_MouseWheel(object sender, MouseWheelEventArgs e)
+        {
+            int valueOfWheel = 0;
+
+            // If the mouse wheel delta is positive, move the box up.
+            if (e.Delta > 0)
+            {
+                valueOfWheel = 1;
+            }
+
+            // If the mouse wheel delta is negative, move the box down.
+            if (e.Delta < 0)
+            {
+                valueOfWheel = -1;
+            }
+
+            if (insideVolumeSlider)
+            {
+                Slider_Vol.Value = Slider_Vol.Value + ( 0.1 * valueOfWheel );
+                return;
+            }
+            if (insideBalanceSlider)
+            {
+                SliderStereo.Value = SliderStereo.Value + (3 * valueOfWheel);
+                return;
+            }
+            if (insideSeek)
+            {
+                skipSeek( 5 * valueOfWheel);
+                // mediaPlayer.
+                // Sld_Position.Value = Sld_Position.Value + 0.1;
+                // SliderStereo.Value = SliderStereo.Value + (3 * valueOfWheel);
+                return;
+            }
+
+            Slider_Vol.Value = Slider_Vol.Value + (0.5 * valueOfWheel);
+
+
+        }
+
+        private void skipSeek( double seconds )
+        {
+            double total = mediaPlayer.NaturalDuration.TimeSpan.TotalSeconds;
+            double pos1 = mediaPlayer.Position.TotalSeconds;
+            double newPos = pos1 + seconds;
+            mediaPlayer.Position = TimeSpan.FromSeconds(newPos);
+
+            double Position = mediaPlayer.Position.TotalSeconds;
+            // Duration t2 = mediaPlayer.NaturalDuration;
+
+            Prg_Bar.Value = 100 / (total / Position);
+            SetSlider(100 / (total / Position) / 10);
+        }
+
+        private void Prg_Bar_MouseEnter(object sender, MouseEventArgs e)
+        {
+            insideSeek = true;
+        }
+
+        private void Prg_Bar_MouseLeave(object sender, MouseEventArgs e)
+        {
+            insideSeek = false;
+        }
+
+        private void Sld_Position_MouseEnter(object sender, MouseEventArgs e)
+        {
+
+        }
+
+        private void Sld_Position_MouseLeave(object sender, MouseEventArgs e)
+        {
+
         }
     }
 }
