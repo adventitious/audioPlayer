@@ -320,6 +320,8 @@ namespace mp3player
 
             t.Width = (great > 0) ? great : 0;
         }
+
+
     }
 }
 

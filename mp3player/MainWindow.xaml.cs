@@ -318,7 +318,7 @@ namespace mp3player
 
         private void Slider_MouseDoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
-            SliderStereo.Value = 10; 
+            SliderStereo.Value = 0; 
         }
 
 
@@ -366,7 +366,6 @@ namespace mp3player
             {
                 MessageBox.Show( ex.Message );
             }
-            
         }
 
         private void Slider_Vol_MouseEnter(object sender, System.Windows.Input.MouseEventArgs e)
@@ -378,6 +377,23 @@ namespace mp3player
         private void Slider_Vol_MouseLeave(object sender, System.Windows.Input.MouseEventArgs e)
         {
             Txb_File.Text = Txb_File_Text;
+        }
+
+        private void SliderStereo_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            if (mediaPlayer == null)
+            {
+                return;
+            }
+            try
+            {
+                mediaPlayer.Balance = SliderStereo.Value / 10;
+                //Txb_File.Text = "volume: " + (int)(mediaPlayer.Balance * 100);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
         }
     }
 }

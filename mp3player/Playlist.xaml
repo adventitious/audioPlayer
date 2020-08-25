@@ -44,7 +44,8 @@
                  ItemTemplate="{StaticResource listboxTemplate}"
                  Background="Black" 
                  MouseDoubleClick="Lsb_Pl_MouseDoubleClick" 
-                 HorizontalContentAlignment="Stretch" ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.VerticalScrollBarVisibility="Auto"/>
+                 HorizontalContentAlignment="Stretch" ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.VerticalScrollBarVisibility="Auto" 
+                 Drop="ListBox_Drop"  AllowDrop="True" />
 
 
 

@@ -23,7 +23,7 @@
         <Button x:Name="Btn_Pause_Copy" Content="Open" HorizontalAlignment="Left" Margin="335,178,0,0" VerticalAlignment="Top" Width="75"/>
         <Button x:Name="Btn_Stop_Copy3" Content="Repeat" HorizontalAlignment="Left" Margin="495,178,0,0" VerticalAlignment="Top" Width="75"/>
         <Slider x:Name="Slider_Vol" HorizontalAlignment="Left" Margin="197,77,0,0" VerticalAlignment="Top" Width="213" Value="10" TickFrequency="0" IsMoveToPointEnabled="True" ValueChanged="Slider_Vol_ValueChanged" MouseEnter="Slider_Vol_MouseEnter" MouseLeave="Slider_Vol_MouseLeave" />
-        <Slider x:Name="SliderStereo" HorizontalAlignment="Left" Margin="415,77,0,0" VerticalAlignment="Top" Width="70" Value="10" Maximum="20" IsMoveToPointEnabled="True" MouseDoubleClick="Slider_MouseDoubleClick"/>
+        <Slider x:Name="SliderStereo" HorizontalAlignment="Left" Margin="415,77,0,0" VerticalAlignment="Top" Width="70" IsMoveToPointEnabled="True" MouseDoubleClick="Slider_MouseDoubleClick" ValueChanged="SliderStereo_ValueChanged" TickFrequency="0" Minimum="-10"/>
         <Label Content="144 kHz" HorizontalAlignment="Left" Margin="291,43,0,0" VerticalAlignment="Top" Foreground="#FF18D90C" Background="Black" HorizontalContentAlignment="Right" Width="54"/>
         <Label Content="2768 kbps" HorizontalAlignment="Left" Margin="197,43,0,0" VerticalAlignment="Top" Foreground="#FF18D90C" Background="Black" Width="68" HorizontalContentAlignment="Right"/>
 
