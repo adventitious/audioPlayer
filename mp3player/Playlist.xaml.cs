@@ -115,36 +115,64 @@ namespace mp3player
 
         }
 
+        public void InitOnStart()
+        {
+            Lsb_Pl.SelectedIndex = 3;
+
+            Track t = Tracks.ElementAt( 1 );
+            LoadTrack(t);
+            try
+            {
+                MainWindow.SeekPauseFromClose(100, 240);
+            }
+            catch( Exception e1 )
+            {
+                MessageBox.Show("skip :" + e1 );
+            }
+        }
+
         public void WriteCloseM3U()
         {
             //MessageBox.Show("WriteCloseM3U");
-            if (PlaylistChanged)
+            if (PlaylistChanged == false)
             {
-                string s = "#EXTM3U";
-                s += "\r\n";
-
-                foreach (Track t in Tracks)
-                {
-                    s += "#EXTINF:";
-                    s += (int)t.LengthSeconds;
-                    s += ",";
-                    s += t.ListString;
-                    s += "\r\n";
-                    s += "file" + ":///";
-                    s += t.Path;
-                    s += "\r\n";
-                }
-
-                // string s = "Hello and Welcome3" + Environment.NewLine;
-                File.WriteAllText(PlaylistName, s);
+                return;
             }
+
+            string s = "#EXTM3U";
+            s += "\r\n";
+
+            foreach (Track t in Tracks)
+            {
+                s += "#EXTINF:";
+                s += (int)t.LengthSeconds;
+                s += ",";
+                s += t.ListString;
+                s += "\r\n";
+                s += "file" + ":///";
+                s += t.Path;
+                s += "\r\n";
+            }
+
+            // string s = "Hello and Welcome3" + Environment.NewLine;
+            File.WriteAllText(PlaylistName, s);
+            
         }
 
 
 
         public void MakeTracksFromM3U()
         {
-            string m3u = File.ReadAllText(PlaylistName);
+            string m3u = "";
+            try
+            {
+                m3u = File.ReadAllText(PlaylistName);
+            }
+            catch( FileNotFoundException  )
+            {
+                return;
+            }
+
 
             string[] lines = m3u.Split(new string[] { "\r\n" }, StringSplitOptions.RemoveEmptyEntries);
 
@@ -204,7 +232,6 @@ namespace mp3player
         }
 
 
-
         private void ListBox_Drop(object sender, DragEventArgs e)
         {
             string[] files = (string[])e.Data.GetData(DataFormats.FileDrop);
@@ -248,19 +275,24 @@ namespace mp3player
             Hide();
         }
 
-        public void PlayTrack( Track t )
+        public void LoadTrack(Track t)
         {
             if (NowPlaying != null)
             {
                 NowPlaying.IsPlaying = false;
             }
             MainWindow.Open(t.Path);
-            MainWindow.Play();
+            // MainWindow.Play();
             MainWindow.Txb_File.Text = t.ToString();
             t.IsPlaying = true;
             NowPlaying = t;
 
             Lsb_Pl.Items.Refresh();
+        }
+        public void PlayTrack(Track t)
+        {
+            LoadTrack(t);
+            MainWindow.Play();
         }
 
         public void BackTrack()
@@ -324,42 +356,3 @@ namespace mp3player
 
     }
 }
-
-/*
-
-    
-    <Window.Resources>
-        <Style x:Key="_ListBoxItemStyle" TargetType="ListBoxItem">
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="ListBoxItem">
-                        <Border Name="_Border"
-                                Padding="2"
-                                SnapsToDevicePixels="true">
-                            <ContentPresenter />
-                        </Border>
-                        <ControlTemplate.Triggers>
-                            <Trigger Property="IsSelected" Value="true">
-                                <Setter TargetName="_Border" Property="Background" Value="Yellow"/>
-                                <Setter Property="Foreground" Value="Red"/>
-                            </Trigger>
-                        </ControlTemplate.Triggers>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
-    </Window.Resources>
-
-
-    
-                    <DataGridTemplateColumn.HeaderStyle>
-                        <Style TargetType="DataGridColumnHeader">
-                            <Setter Property="Background" Value="Black"/>
-                            <Setter Property="Height" Value="6"/>
-                        </Style>
-                    </DataGridTemplateColumn.HeaderStyle>
-
-
-                        <Setter TargetName="_Border" Property="Background" Value="Yellow"/>
-                        <Setter Property="Foreground" Value="Red"/>  
-*/

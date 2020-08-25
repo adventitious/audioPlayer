@@ -25,8 +25,13 @@ namespace mp3player
         bool CountUp = false;
         bool Stopped = true;
         string Txb_File_Text = "";
+
+        bool PauseFromClose = false;
         int PauseBlink = 0;
         int PauseBlinkMax = 12;
+        double PauseTotal = 0;
+        double PauseProgress = 0;
+
 
 
 
@@ -39,25 +44,23 @@ namespace mp3player
         {
             mediaPlayer = new MediaPlayer();
 
-            // Open the file to read from.
-            //string m3u = File.ReadAllText( PlaylistName );
-
-            /*
-            using (StreamReader readtext = new StreamReader( PlaylistName ))
-            {
-                m3u = readtext.ReadLine();
-            }
-            */
-
             aTimer = new System.Timers.Timer();
             aTimer.Elapsed += new ElapsedEventHandler(OnTimedEvent);
             aTimer.Interval = 100;
 
             Playlist = new Playlist(this);
             Playlist.Show();
+
+            InitOnStart();
         }
 
+        private void InitOnStart()
+        {
+            Slider_Vol.Value = 90;
+            Playlist.InitOnStart();
+            // Slider_Vol.Value = Slider_Vol.Value + (0.5 * valueOfWheel);
 
+        }
 
         private void Mp3_Play_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
@@ -92,8 +95,13 @@ namespace mp3player
             aTimer.Enabled = false;
 
             mediaPlayer.Stop();
-            Stopped = true; ;
-            UpdateInfo();
+            Stopped = true;
+
+            TxBk_Info.Text = " :  ";
+            Prg_Bar.Value = 0;
+            SetSlider( 0);
+
+            // UpdateInfo();
         }
 
         private void Btn_Pause_Click(object sender, RoutedEventArgs e)
@@ -107,6 +115,8 @@ namespace mp3player
             else
             {
                 mediaPlayer.Pause();
+                PauseProgress = mediaPlayer.Position.TotalSeconds;
+                PauseTotal = mediaPlayer.NaturalDuration.TimeSpan.TotalSeconds;
                 // aTimer.Enabled = false;
                 Paused = true;
             }
@@ -149,59 +159,45 @@ namespace mp3player
         }
 
 
-        public void UpdateInfo()
+        private void UpdateInfoPause()
         {
-            double Position = mediaPlayer.Position.TotalSeconds;
-            Duration t2 = mediaPlayer.NaturalDuration;
-
-            /*
-            if (!mediaPlayer.NaturalDuration.HasTimeSpan)
+            string countString = "";
+            if ((PauseBlink * 2) < PauseBlinkMax)
             {
-                Thread.Sleep(100);
+                countString = " :  ";
             }
-            */
-
-            if (!t2.HasTimeSpan)
+            else
             {
-                TxBk_Info.Text = ("0:00");
-                return;
-            }
-
-            if ( Paused )
-            {
-                string countString = "";
-                if ( ( PauseBlink * 2 ) < PauseBlinkMax )
+                if (CountUp == true)
                 {
-                    countString = " :  ";
+                    // countString = (SecondsToText((int)Math.Floor(Position)));
+                    countString = (SecondsToText((int)PauseProgress));
                 }
                 else
                 {
-                    if (CountUp == true)
-                    {
-                        countString = (SecondsToText((int)Math.Floor(Position)));
-                    }
-                    else
-                    {
-                        countString = (SecondsToText((int)Math.Floor( t2.TimeSpan.TotalSeconds - Position)));
-                    }
+                    // countString = (SecondsToText((int)Math.Floor( t2.TimeSpan.TotalSeconds - Position)));
+                    countString = (SecondsToText((int)(PauseTotal - PauseProgress)));
                 }
-
-                TxBk_Info.Text = countString;
-
-                PauseBlink += 1;
-                PauseBlink %= PauseBlinkMax;
-                
-                return;
             }
 
+            TxBk_Info.Text = countString;
 
+            PauseBlink += 1;
+            PauseBlink %= PauseBlinkMax;
+
+
+        }
+
+        private void UpdateInfoPlaying(Duration naturalDuration)
+        {
             try
             {
-                double total = t2.TimeSpan.TotalSeconds;
+                double total = naturalDuration.TimeSpan.TotalSeconds;
+                double Position = mediaPlayer.Position.TotalSeconds;
                 double remaining = total - Position;
                 // Display the time remaining in the current media.
 
-                if (remaining == 0 )
+                if (remaining == 0)
                 {
                     // MessageBox.Show("ending");
                     Playlist.NextTrack();
@@ -209,7 +205,7 @@ namespace mp3player
 
                 string countString = "";
 
-                if ( CountUp == true )
+                if (CountUp == true)
                 {
                     countString = (SecondsToText((int)Math.Floor(Position)));
                 }
@@ -220,13 +216,34 @@ namespace mp3player
 
                 TxBk_Info.Text = countString; //  (SecondsToText((int)Math.Floor(remaining)));
 
-                Prg_Bar.Value = 100 / (total / Position);
-                SetSlider( 100 / (total / Position) / 10 );
+                Prg_Bar.Value = 100 / (total / Position);   //  100 / ( 60 / 30 )  100 / 2 = 50
+                SetSlider(100 / (total / Position));
             }
-            catch (Exception )
+            catch (Exception)
             {
                 // MessageBox.Show(eee.Message);
             }
+
+        }
+
+        public void UpdateInfo()
+        {
+            if ( Paused )
+            {
+                UpdateInfoPause();
+                return;
+            }
+
+            Duration naturalDuration = mediaPlayer.NaturalDuration;
+
+            if (naturalDuration.HasTimeSpan == false ) 
+            {
+                TxBk_Info.Text = ("0:00");
+                return;
+            }
+
+            UpdateInfoPlaying( naturalDuration );
+
         }
 
 
@@ -243,6 +260,12 @@ namespace mp3player
 
         private void UnPause()
         {
+            if( PauseFromClose )
+            {
+                mediaPlayer.Position = TimeSpan.FromSeconds( PauseProgress );
+                PauseFromClose = false;
+            }
+            
             mediaPlayer.Play();
             // aTimer.Enabled = true;
             Paused = false;
@@ -269,7 +292,7 @@ namespace mp3player
 
         public void Play()
         {
-            mediaPlayer.Play();
+            mediaPlayer.Play(); 
             aTimer.Enabled = true;
             Stopped = false;
 
@@ -298,7 +321,7 @@ namespace mp3player
             Duration t2 = mediaPlayer.NaturalDuration;
 
             Prg_Bar.Value = 100 / (total / Position);
-            SetSlider(100 / (total / Position) / 10);
+            SetSlider(100 / (total / Position) );
         }
 
         private void SetSlider( double newVal )
@@ -389,29 +412,11 @@ namespace mp3player
         private void Slider_Vol_MouseDoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
             mediaPlayer.Volume = 1;
-            Slider_Vol.Value = 10;
+            Slider_Vol.Value = 100;
         }
 
-        private void Slider_Vol_MouseWheel(object sender, System.Windows.Input.MouseWheelEventArgs e)
-        {
-            /*
-            // If the mouse wheel delta is positive, move the box up.
-            if (e.Delta > 0)
-            {
-                Slider_Vol.Value = Slider_Vol.Value - 0.4;
-            }
 
-            // If the mouse wheel delta is negative, move the box down.
-            if (e.Delta < 0)
-            {
-                Slider_Vol.Value = Slider_Vol.Value + 0.4;
-            }
-            */
-        }
 
-        private void Window_MouseDown(object sender, MouseButtonEventArgs e)
-        {
-        }
 
         private void Mp3_Play_MouseDown(object sender, MouseButtonEventArgs e)
         {
@@ -431,7 +436,7 @@ namespace mp3player
             }
             try
             {
-                mediaPlayer.Volume = Slider_Vol.Value / 10;
+                mediaPlayer.Volume = Slider_Vol.Value / 100;
                 if( insideVolumeSlider )
                 {
                     Txb_File.Text = "volume: " + (int)(mediaPlayer.Volume * 100);
@@ -469,7 +474,7 @@ namespace mp3player
 
             if (insideVolumeSlider)
             {
-                Slider_Vol.Value = Slider_Vol.Value + ( 0.1 * valueOfWheel );
+                Slider_Vol.Value = Slider_Vol.Value + (  valueOfWheel );
                 return;
             }
             if (insideBalanceSlider)
@@ -486,12 +491,12 @@ namespace mp3player
                 return;
             }
 
-            Slider_Vol.Value = Slider_Vol.Value + (0.5 * valueOfWheel);
+            Slider_Vol.Value = Slider_Vol.Value + ( 5 * valueOfWheel);
 
 
         }
 
-        private void skipSeek( double seconds )
+        public void skipSeek(double seconds)
         {
             double total = mediaPlayer.NaturalDuration.TimeSpan.TotalSeconds;
             double pos1 = mediaPlayer.Position.TotalSeconds;
@@ -502,7 +507,29 @@ namespace mp3player
             // Duration t2 = mediaPlayer.NaturalDuration;
 
             Prg_Bar.Value = 100 / (total / Position);
-            SetSlider(100 / (total / Position) / 10);
+            SetSlider(100 / (total / Position) );
+        }
+
+        public void SeekPauseFromClose(double secondsPos, double secondsTotal)
+        {
+            //
+            //double pos1 = mediaPlayer.Position.TotalSeconds;
+            //double newPos = pos1 + seconds;
+            //mediaPlayer.Position = TimeSpan.FromSeconds(95);
+            //mediaPlayer.Pause();
+            //double Position = mediaPlayer.Position.TotalSeconds;
+            // Duration t2 = mediaPlayer.NaturalDuration;
+            //double total = mediaPlayer.NaturalDuration.TimeSpan.TotalSeconds;
+            
+            PauseFromClose = true;
+            PauseTotal =  secondsTotal;
+            PauseProgress = secondsPos;
+
+            int prog100 = (int)( secondsPos * 100 / secondsTotal);
+            Prg_Bar.Value = prog100;
+            SetSlider(prog100);
+            Paused = true;
+            aTimer.Enabled = true;
         }
 
         private void Prg_Bar_MouseEnter(object sender, MouseEventArgs e)
@@ -513,16 +540,6 @@ namespace mp3player
         private void Prg_Bar_MouseLeave(object sender, MouseEventArgs e)
         {
             insideSeek = false;
-        }
-
-        private void Sld_Position_MouseEnter(object sender, MouseEventArgs e)
-        {
-
-        }
-
-        private void Sld_Position_MouseLeave(object sender, MouseEventArgs e)
-        {
-
         }
     }
 }
