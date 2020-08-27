@@ -111,8 +111,6 @@ namespace mp3player
 
             Lsb_Pl.ItemsSource = Tracks;
             MakeTracksFromM3U();
-
-
         }
 
         public void InitOnStart()
@@ -120,7 +118,7 @@ namespace mp3player
             Lsb_Pl.SelectedIndex = 3;
 
             Track t = Tracks.ElementAt( 1 );
-            LoadTrack(t);
+            MainWindow.LoadTrack(t);
             try
             {
                 MainWindow.SeekPauseFromClose(100, 240);
@@ -129,6 +127,13 @@ namespace mp3player
             {
                 MessageBox.Show("skip :" + e1 );
             }
+        }
+
+
+        public int GetIndexOfNowPlaying()
+        {
+            return Tracks.IndexOf(NowPlaying);
+            // return 0;
         }
 
         public void WriteCloseM3U()
@@ -259,7 +264,7 @@ namespace mp3player
             {
                 Track t = (Track)Lsb_Pl.SelectedItem;
 
-                PlayTrack(t);
+                MainWindow.PlayTrack(t);
             }
             catch( Exception ex )
             {
@@ -275,33 +280,13 @@ namespace mp3player
             Hide();
         }
 
-        public void LoadTrack(Track t)
-        {
-            if (NowPlaying != null)
-            {
-                NowPlaying.IsPlaying = false;
-            }
-            MainWindow.Open(t.Path);
-            // MainWindow.Play();
-            MainWindow.Txb_File.Text = t.ToString();
-            t.IsPlaying = true;
-            NowPlaying = t;
-
-            Lsb_Pl.Items.Refresh();
-        }
-        public void PlayTrack(Track t)
-        {
-            LoadTrack(t);
-            MainWindow.Play();
-        }
-
         public void BackTrack()
         {
             int nowPlaying = Tracks.IndexOf(NowPlaying);
             if (nowPlaying > 0 )
             {
                 Track t = Tracks.ElementAt(nowPlaying - 1);
-                PlayTrack(t);
+                MainWindow.PlayTrack(t);
             }
         }
         public void NextTrack()
@@ -310,16 +295,19 @@ namespace mp3player
             if (nowPlaying < Tracks.Count - 1)
             {
                 Track t = Tracks.ElementAt(nowPlaying + 1);
-                PlayTrack(t);
+                MainWindow.PlayTrack(t);
             }
         }
-        public void TrackOne()
+
+        public Track TrackOne()
         {
             if ( Tracks.Count > 0 )
             {
                 Track t = Tracks.ElementAt( 0 );
-                PlayTrack(t);
+                return t;
+                //MainWindow.PlayTrack(t);
             }
+            return null;
         }
 
         private void Lsb_Pl_MouseDoubleClick(object sender, MouseButtonEventArgs e)
@@ -328,7 +316,7 @@ namespace mp3player
             {
                 Track t = (Track)Lsb_Pl.SelectedItem;
 
-                PlayTrack(t);
+                MainWindow.PlayTrack(t);
                 Lsb_Pl.Items.Refresh();
             }
             catch (Exception ex)
