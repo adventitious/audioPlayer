@@ -76,13 +76,52 @@ namespace mp3player
 
         private void InitOnStart()
         {
-            Slider_Vol.Value = 90;
+            
+            ReadSettings();
             Playlist.InitOnStart();
         }
 
+
+        private void ReadSettings()
+        {
+            String settings;
+            try
+            {
+                settings = System.IO.File.ReadAllText(FileNameSettings);
+            }
+            catch (FileNotFoundException)
+            {
+                return;
+            }
+            string[] lines = settings.Split(new string[] { "\r\n" }, StringSplitOptions.RemoveEmptyEntries);
+
+            try
+            {
+                double volVal = double.Parse(lines[1]);
+                Slider_Vol.Value = volVal;
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show(e.Message);
+                return;
+            }
+
+
+            MessageBox.Show(lines[1]);
+            MessageBox.Show(lines[2]);
+            MessageBox.Show(lines[3]);
+        }
+
+
         private void WriteSettings()
         {
-            string s = "position:";
+            string s = "Volume:";
+            s += "\r\n";
+            s += "" +  Slider_Vol.Value;
+            s += "\r\n";
+            s += "\r\n";
+
+            s += "position:";
             s += "\r\n";
             s += "" + ((int)mediaPlayer.Position.TotalSeconds);
             s += "\r\n";
