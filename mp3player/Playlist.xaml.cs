@@ -113,16 +113,16 @@ namespace mp3player
             MakeTracksFromM3U();
         }
 
-        public void InitOnStart()
+        public void InitOnStart(int selected, int playing, double pausePosition, double pauseTotal)
         {
             /*
-            Lsb_Pl.SelectedIndex = 3;
+            Lsb_Pl.SelectedIndex = selected;
 
-            Track t = Tracks.ElementAt( 1 );
+            Track t = Tracks.ElementAt(playing);
             MainWindow.LoadTrack(t);
             try
             {
-                MainWindow.SeekPauseFromClose(100, 240);
+                MainWindow.SeekPauseFromClose(pausePosition, pauseTotal);
             }
             catch( Exception e1 )
             {

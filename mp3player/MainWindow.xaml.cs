@@ -88,7 +88,7 @@ namespace mp3player
         {
             
             ReadSettings();
-            Playlist.InitOnStart();
+            // Playlist.InitOnStart(2, 4, 30, 120);
         }
 
 
@@ -180,22 +180,45 @@ namespace mp3player
             s += "\r\n";
             s += "\r\n";
 
-            s += "position:";
+            s += "pause_position:";
             s += "\r\n";
-            s += "" + ((int)mediaPlayer.Position.TotalSeconds);
+            s += "" + mediaPlayer.Position.TotalSeconds;
+            s += "\r\n";
+            s += "\r\n";
+
+            s += "pause_total:";
+            s += "\r\n";
+            s += "" + 120.0;
             s += "\r\n";
             s += "\r\n";
 
             s += "NowPlaying:";
             s += "\r\n";
-            //s += Playlist.NowPlaying.;
+            s += 2;
+            s += "\r\n";
+            s += "\r\n";
+
+            s += "NowSelected:";
+            s += "\r\n";
+            s += 4;
+            s += "\r\n";
+            s += "\r\n";
 
             s += "file" + ":///";
 
             s += "\r\n";
 
             // string s = "Hello and Welcome3" + Environment.NewLine;
-            System.IO.File.WriteAllText(FileNameSettings, s);
+            try 
+            {
+
+                System.IO.File.WriteAllText(FileNameSettings, s);
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show(e.Message);
+                return;
+            }
         }
 
         private void Btn_Play_Click(object sender, RoutedEventArgs e)
