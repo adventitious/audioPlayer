@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:mp3player"
         mc:Ignorable="d"
-        Title="mp3 player" Height="253.6" Width="665.6" Loaded="Window_Loaded" Closing="Mp3_Play_Closing" Activated="Mp3_Play_Activated" Background="#FF263465" AllowDrop="True" Focusable="False" MouseDown="Mp3_Play_MouseDown" MouseWheel="Mp3_Play_MouseWheel">
+        Title="mp3 player" Height="253.6" Width="665.6" Loaded="Window_Loaded" Closing="Mp3_Play_Closing" Activated="Mp3_Play_Activated" Background="#FF263465" AllowDrop="True" Focusable="False" MouseDown="Mp3_Play_MouseDown" MouseWheel="Mp3_Play_MouseWheel" Visibility="Visible">
 
     <Grid Focusable="True">
         <Button x:Name="Btn_Play" Content="|&gt;" HorizontalAlignment="Left" Margin="69,178,0,0" VerticalAlignment="Top" Width="55" Click="Btn_Play_Click"/>
@@ -14,7 +14,7 @@
         <TextBlock x:Name="TxBk_Info" Margin="24,10,476.2,0" TextWrapping="Wrap" Text=" :  " VerticalAlignment="Top" Height="67" FontSize="48" Background="Black" Foreground="#FF2FB015" Width="159" HorizontalAlignment="Center" TextAlignment="Center" MouseDown="TxBk_Info_MouseDown"/>
         <Button x:Name="Btn_Pause" Content="||" HorizontalAlignment="Left" Margin="128,178,0,0" VerticalAlignment="Top" Width="55" Click="Btn_Pause_Click"/>
         <Button x:Name="Btn_Playlist" Content="Playlist" HorizontalAlignment="Left" Margin="574,75,0,0" VerticalAlignment="Top" Width="75" Click="Btn_Playlist_Click"/>
-        <ProgressBar x:Name="Prg_Bar" Height="30" Margin="10,99,10.2,0" VerticalAlignment="Top" MouseEnter="Prg_Bar_MouseEnter" MouseLeave="Prg_Bar_MouseLeave"/>
+        <ProgressBar x:Name="Prg_Bar" Height="30" Margin="10,99,10.2,0" VerticalAlignment="Top" MouseEnter="Prg_Bar_MouseEnter" MouseLeave="Prg_Bar_MouseLeave" MouseDown="Prg_Bar_MouseDown"/>
         <Slider x:Name="Sld_Position" Margin="10,134,10.2,0" VerticalAlignment="Top" RenderTransformOrigin="-0.024,-0.316" Height="26" TickFrequency="0" ValueChanged="Sld_Position_ValueChanged" IsMoveToPointEnabled="True" MouseEnter="Prg_Bar_MouseEnter" MouseLeave="Prg_Bar_MouseLeave" Maximum="100"/>
         <Button x:Name="Btn_Back" Content="|&lt;" HorizontalAlignment="Left" Margin="10,178,0,0" VerticalAlignment="Top" Width="55" Click="Btn_Back_Click"/>
         <Button x:Name="Btn_Next" Content="&gt;|" HorizontalAlignment="Left" Margin="246,178,0,0" VerticalAlignment="Top" Width="55" Click="Btn_Next_Click"/>

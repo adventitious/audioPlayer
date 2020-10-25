@@ -48,6 +48,16 @@ namespace mp3player
             aTimer.Interval = 100;
 
             Playlist = new Playlist(this);
+
+
+            Top = 100;
+
+            Left = 200;
+
+            Playlist.Top = 800;
+
+            Playlist.Left = 800;
+
             Playlist.Show();
 
             InitOnStart();
@@ -106,10 +116,35 @@ namespace mp3player
                 return;
             }
 
+            try
+            {
+                double playListTop = double.Parse(lines[3]);
+                double playListLeft = double.Parse(lines[5]);
+                Playlist.Top = playListTop;
+                Playlist.Left = playListLeft;
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show(e.Message);
+                return;
+            }
 
-            MessageBox.Show(lines[1]);
-            MessageBox.Show(lines[2]);
-            MessageBox.Show(lines[3]);
+            try
+            {
+                double windowTop = double.Parse(lines[7]);
+                double windowLeft = double.Parse(lines[9]);
+                Top = windowTop;
+                Left = windowLeft;
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show(e.Message);
+                return;
+            }
+
+
+           // MessageBox.Show("" + lines[1] +  lines[2] + lines[3]);
+            
         }
 
 
@@ -118,6 +153,30 @@ namespace mp3player
             string s = "Volume:";
             s += "\r\n";
             s += "" +  Slider_Vol.Value;
+            s += "\r\n";
+            s += "\r\n";
+
+            s += "PlaylistTop:";
+            s += "\r\n";
+            s += "" + Playlist.Top;
+            s += "\r\n";
+            s += "\r\n";
+
+            s += "PlaylistLeft:";
+            s += "\r\n";
+            s += "" + Playlist.Left;
+            s += "\r\n";
+            s += "\r\n";
+
+            s += "WindowTop:";
+            s += "\r\n";
+            s += "" + Top;
+            s += "\r\n";
+            s += "\r\n";
+
+            s += "WindowLeft:";
+            s += "\r\n";
+            s += "" + Left;
             s += "\r\n";
             s += "\r\n";
 
@@ -598,6 +657,21 @@ namespace mp3player
             return "" + seconds / 60 + ":" + seconds2;
         }
 
+        private void Prg_Bar_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            try
+            {
+
+                double q = e.GetPosition(Prg_Bar).X;
+
+                // MessageBox.Show(q + "");
+            }
+            catch (Exception w)
+            {
+
+                MessageBox.Show(w.Message);
+            }
+        }
     }
 }
 
