@@ -115,6 +115,7 @@ namespace mp3player
 
         public void InitOnStart()
         {
+            /*
             Lsb_Pl.SelectedIndex = 3;
 
             Track t = Tracks.ElementAt( 1 );
@@ -127,6 +128,7 @@ namespace mp3player
             {
                 MessageBox.Show("skip :" + e1 );
             }
+            */
         }
 
 
